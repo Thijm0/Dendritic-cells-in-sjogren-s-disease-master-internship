@@ -504,7 +504,7 @@ dc_only_1.markers %>%
 
 dc_only_1$clusters <- Idents(dc_only_1)
 
-# Finding top markers, but ones that are actually useful
+# Finding useful markers
 filtered_markers <- dc_only_1.markers %>%
   filter(pct.1 >= 0.20, (pct.1 - pct.2) >= 0.15, avg_log2FC >= 0.25) %>%
   # Filters: expressed in ≥20% of cluster, cluster specificity and meaningful effect size
@@ -531,7 +531,7 @@ VlnPlot(dc_only_1, features = c(unlist(unique(marker_panel))))
 # Cluster 3 is cDC1
 # Cluster 0 and 1 are both cDC2
 
-# adding annotations and setting them to the active idents
+# Adding annotations and setting them to the active idents
 new.cluster.ids <- c("cDC2", "activated cDC2", "moDC", "cDC1")
 names(new.cluster.ids) <- levels(dc_only_1)
 dc_only_1 <- RenameIdents(dc_only_1, new.cluster.ids)
@@ -552,7 +552,7 @@ dc_only_1_final <- SCTransform(dc_only_1_final, verbose = FALSE)
 
 colnames(dc_only_1_final@meta.data)[colnames(dc_only_1_final@meta.data) == "disease"] <- "condition"
 
-# converting to character to replace Sjogren syndrome and then converting back to factor
+# Converting to character to replace Sjogren syndrome and then converting back to factor
 dc_only_1_final@meta.data$condition <- as.character(dc_only_1_final@meta.data$condition)
 
 dc_only_1_final@meta.data$condition[dc_only_1_final@meta.data$condition == "Sjogren syndrome"] <- "Sjogren_syndrome"
@@ -596,7 +596,7 @@ meta <- dc_only_1@meta.data %>%
 df_ssgsea <- df_ssgsea %>%
   left_join(meta[c("cell_type","cell","condition")], by = "cell")
 
-# Run Wilcoxon test per cluster × pathway
+# Running Wilcoxon test per cluster × pathway
 # Exact = false to remove errors
 pvals <- df_ssgsea %>%
   group_by(cell_type, pathway) %>%
