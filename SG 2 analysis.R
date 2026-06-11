@@ -27,7 +27,7 @@ library(tidyverse)
 library(msigdbr)
 
 
-# to read in final Dc subsetted object with PSS_B
+# To read in final Dc subsetted object with PSS_B
 
 dc_only <- readRDS("C:/Users/thijm/Downloads/DC_paper_2_PSS_B_data")
 
@@ -127,7 +127,7 @@ DC_paper_2_data$condition <- sapply(parts, `[`, 1)
 
 ################## Data analysis #################
 
-# looking at nFeature and nCount of the data to determine QC cutoffs
+# Looking at nFeature and nCount of the data to determine QC cutoffs
 VlnPlot(DC_paper_2_data, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
     
 FeatureScatter(DC_paper_2_data, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
@@ -254,7 +254,7 @@ DimPlot(second_subset, reduction = "pca")
 ElbowPlot(second_subset)
 # PC 5 cutoff
 
-# Creatign a UMAP
+# Creating a UMAP
 second_subset <- FindNeighbors(second_subset, dims = 1:5)
 
 second_subset <- FindClusters(second_subset, resolution = 0.5)
@@ -289,7 +289,6 @@ DC_data.markers %>%
 DC_data$clusters <- Idents(DC_data)
 
 # For finding useful markers
-
 filtered_markers <- DC_data.markers %>%
   filter(pct.1 >= 0.20, (pct.1 - pct.2) >= 0.15, avg_log2FC >= 0.25) %>%
   # filters: expressed in ≥20% of cluster, cluster specificity and meaningful effect size
@@ -315,7 +314,7 @@ top10_table <- filtered_markers %>%
 # cluster 3 maybe moDC
 # cluster 5 has cDC1
 
-# Wrting to csv for creating an excel table
+# Writing to csv for creating an excel table
 write.csv(top10_table, "C:/Users/thijm/downloads/top10_table_temp.csv", row.names=FALSE)
 
 # Creating a DC_containing object
@@ -494,11 +493,11 @@ write.csv(top10_table, "C:/Users/thijm/downloads/top10_table.csv", row.names=FAL
 
 # The dc_only has 3 clusters with cDC1, cDC2 and mono-DC.
 
-# renaming the dc_B_only object to dc_only
+# Renaming the dc_B_only object to dc_only
 dc_only <- dc_B_only
 
 
-# creating a UMAP for the presentation
+# Creating a UMAP for the presentation
 umap_plot <- DimPlot(dc_only, reduction = "umap")
 umap_plot
 
@@ -514,7 +513,7 @@ dc_only$clusters <- Idents(dc_only)
 # Finding top markers
 filtered_markers <- dc_only.markers %>%
   filter(pct.1 >= 0.20, (pct.1 - pct.2) >= 0.15, avg_log2FC >= 0.25) %>%
-  # expressed in ≥20% of cluster, cluster specificity and meaningful effect size
+  # filters: expressed in ≥20% of cluster, cluster specificity and meaningful effect size
   
   # Keeping genes with padj < 0.05 
   filter(p_val_adj < 0.05) %>%
@@ -623,7 +622,7 @@ plot3
 
 # Creating the input object needed for ssGSEA
 
-# Putting the Dc types into a metadata column
+# Putting the DC types into a metadata column
 dc_only$cell_type <- Idents(dc_only)
 
 # Loading the GO BP C5 gene set
