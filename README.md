@@ -10,7 +10,7 @@ For each analysis the used R packages are at the top of the page. R version 4.5.
 ## Support
 If you have any questions regarding the code, feel free to email thijmen.daas@ru.nl with your questions. Keep in mind I might take some time to respond.
 
-## Authors and acknowledgment
+## Author
 The code is writen by me, Thijmen Daas
 
 ## Project status
