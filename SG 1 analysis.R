@@ -450,7 +450,7 @@ plot3
 ################## Normalizing dc_only_1 to account for nCount_RNA differences ##########################
 
 
-# Had weird ssGSEA results were every path was negative for Sjogren's 
+# Had weird ssGSEA results where every path was negative for Sjogren's 
 # from looking at the nCount_RNA plots it seemed lower in Sjogren's then SICCA
 # To remove the bias regressing out nCount_RNA and nFeature_RNA
 
