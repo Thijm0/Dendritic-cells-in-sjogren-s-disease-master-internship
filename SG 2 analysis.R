@@ -188,45 +188,45 @@ umap_plot + FeaturePlot(DC_paper_2_data, features= c("CLEC4C", "TCF4", "GZMB", "
 # pDC maybe cluster 14/17
 
 # Subsetting the seurat object to DC containing clusters
-pot_dc_data <- subset(DC_paper_2_data, idents = c(14,17))
+first_subset <- subset(DC_paper_2_data, idents = c(14,17))
 
 
-################## Analyzing potentially DC subsetted data ##############
+################## Analyzing the first potentially DC subsetted data ##############
 
 
 # Finding variable features and scaling the data
-pot_dc_data <- FindVariableFeatures(pot_dc_data, selection.method = "vst", nfeatures = 2000)
+first_subset <- FindVariableFeatures(first_subset, selection.method = "vst", nfeatures = 2000)
 
-pot_dc_data <- ScaleData(pot_dc_data, features = VariableFeatures(pot_dc_data)) 
+first_subset <- ScaleData(first_subset, features = VariableFeatures(first_subset)) 
 
 # Running PCA
-pot_dc_data <- RunPCA(pot_dc_data, features = VariableFeatures(object = pot_dc_data))
+first_subset <- RunPCA(first_subset, features = VariableFeatures(object = first_subset))
 
-DimPlot(pot_dc_data, reduction = "pca")
+DimPlot(first_subset, reduction = "pca")
 
 # Validating whether the clusters really contain DCs
-DotPlot(pot_dc_data, features = unique(unlist(marker_panel))) +
+DotPlot(first_subset, features = unique(unlist(marker_panel))) +
   RotatedAxis()
 
 # Plotting an elbowplot to determine which PCs to use
-ElbowPlot(pot_dc_data)
+ElbowPlot(first_subset)
 # PC 5 cutoff
 
 # Creating a UMAP
-pot_dc_data <- FindNeighbors(pot_dc_data, dims = 1:5)
+first_subset <- FindNeighbors(first_subset, dims = 1:5)
 
-pot_dc_data <- FindClusters(pot_dc_data, resolution = 0.5)
+first_subset <- FindClusters(first_subset, resolution = 0.5)
 
-pot_dc_data <- RunUMAP(pot_dc_data, dims = 1:5)
+first_subset <- RunUMAP(first_subset, dims = 1:5)
 
 # Plotting the UMAP
-umap_plot <- DimPlot(pot_dc_data, reduction = "umap")
+umap_plot <- DimPlot(first_subset, reduction = "umap")
 
 # Checking which clusters contain DCs
-DotPlot(pot_dc_data, features = unique(unlist(marker_panel))) +
+DotPlot(first_subset, features = unique(unlist(marker_panel))) +
   RotatedAxis()
 
-umap_plot + FeaturePlot(pot_dc_data, features = c("CD14", "CD163", "CD1C", "S100A8", "S100A9"))
+umap_plot + FeaturePlot(first_subset, features = c("CD14", "CD163", "CD1C", "S100A8", "S100A9"))
 # cDC1 in 5 (still weird spread out)
 # cDC2 5, 8 and 3
 # pDC couple in cluster 8
@@ -235,37 +235,37 @@ umap_plot + FeaturePlot(pot_dc_data, features = c("CD14", "CD163", "CD1C", "S100
 
 
 # Creating a DC-containing object
-sub_sub_dc_data <- subset(pot_dc_data, idents = c(3,4,5,7,8))
+second_subset <- subset(first_subset, idents = c(3,4,5,7,8))
 
 
-################## another round of clustering ###################
+################## second round of clustering ###################
 
 # Finding variable features and scaling the data
-sub_sub_dc_data <- FindVariableFeatures(sub_sub_dc_data, selection.method = "vst", nfeatures = 2000)
+second_subset <- FindVariableFeatures(second_subset, selection.method = "vst", nfeatures = 2000)
 
-sub_sub_dc_data <- ScaleData(sub_sub_dc_data, features = VariableFeatures(sub_sub_dc_data)) 
+second_subset <- ScaleData(second_subset, features = VariableFeatures(second_subset)) 
 
 # Running PCA
-sub_sub_dc_data <- RunPCA(sub_sub_dc_data, features = VariableFeatures(object = sub_sub_dc_data))
+second_subset <- RunPCA(second_subset, features = VariableFeatures(object = second_subset))
 
-DimPlot(sub_sub_dc_data, reduction = "pca")
+DimPlot(second_subset, reduction = "pca")
 
 # Creating an elbowplot to determine which PCs to use
-ElbowPlot(sub_sub_dc_data)
+ElbowPlot(second_subset)
 # PC 5 cutoff
 
 # Creatign a UMAP
-sub_sub_dc_data <- FindNeighbors(sub_sub_dc_data, dims = 1:5)
+second_subset <- FindNeighbors(second_subset, dims = 1:5)
 
-sub_sub_dc_data <- FindClusters(sub_sub_dc_data, resolution = 0.5)
+second_subset <- FindClusters(second_subset, resolution = 0.5)
 
-sub_sub_dc_data <- RunUMAP(sub_sub_dc_data, dims = 1:5)
+second_subset <- RunUMAP(second_subset, dims = 1:5)
 
 # Plotting the UMAP
-umap_plot <- DimPlot(sub_sub_dc_data, reduction = "umap")
+umap_plot <- DimPlot(second_subset, reduction = "umap")
 
 # Renaming the object
-DC_data <- sub_sub_dc_data
+DC_data <- second_subset
 
 
 ################## Another round of clustering #############
