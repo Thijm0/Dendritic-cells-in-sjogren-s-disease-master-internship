@@ -220,54 +220,54 @@ umap_plot + FeaturePlot(PBMC_paper_1_data, features= c("C5AR1", "FCAR", "CCR2", 
 
 
 # Creating a new object with only DC-containing clusters
-pot_dc_data <- subset(PBMC_paper_1_data, idents = c(6,12))
+first_subset <- subset(PBMC_paper_1_data, idents = c(6,12))
 
-############### Analysing pot_dc_data ##############
+############### Analysing the first subset ##############
 
 # 10880 cells
 
 # Finding variable features and scaling the data
-pot_dc_data <- FindVariableFeatures(pot_dc_data, selection.method = "vst", nfeatures = 2000)
+first_subset <- FindVariableFeatures(first_subset, selection.method = "vst", nfeatures = 2000)
 
-pot_dc_data <- ScaleData(pot_dc_data, features = VariableFeatures(pot_dc_data)) 
+first_subset<- ScaleData(first_subset, features = VariableFeatures(first_subset)) 
 
 # Running PCA
-pot_dc_data <- RunPCA(pot_dc_data, features = VariableFeatures(object = pot_dc_data))
+first_subset <- RunPCA(first_subset, features = VariableFeatures(object = first_subset))
 
-DimPlot(pot_dc_data, reduction = "pca")
+DimPlot(first_subset, reduction = "pca")
 
 # Validating whether the clusters do contain DCs
-DotPlot(pot_dc_data, features = unique(unlist(marker_panel))) +
+DotPlot(first_subset, features = unique(unlist(marker_panel))) +
   RotatedAxis()
 
 # Creating an elbowplot to find which PCs to use
-ElbowPlot(pot_dc_data, ndims = 40)
+ElbowPlot(first_subset, ndims = 40)
 # PC 16 cutoff
 
 # Creating a UMAP
-pot_dc_data <- FindNeighbors(pot_dc_data, dims = 1:16)
+first_subset <- FindNeighbors(first_subset, dims = 1:16)
 
-pot_dc_data <- FindClusters(pot_dc_data, resolution = 0.5)
+first_subset <- FindClusters(first_subset, resolution = 0.5)
 
-pot_dc_data <- RunUMAP(pot_dc_data, dims = 1:16)
+first_subset <- RunUMAP(first_subset, dims = 1:16)
 
 # Plotting the UMAP
-umap_plot <- DimPlot(pot_dc_data, reduction = "umap")
+umap_plot <- DimPlot(first_subset, reduction = "umap")
 umap_plot
 
 # Saving this intermediate file for convenience
-SaveSeuratRds(pot_dc_data, file = "C:/Users/thijm/Downloads/PBMC_intermediate_pot_dc_data")
+SaveSeuratRds(first_subset, file = "C:/Users/thijm/Downloads/PBMC_intermediate_pot_dc_data")
 
 # Checking the clusters for dendritic cells
-DotPlot(pot_dc_data, features = c(unique(unlist(marker_panel)))) +
+DotPlot(first_subset, features = c(unique(unlist(marker_panel)))) +
   RotatedAxis()
 
 # Plotting the umap and featureplots to investigate which clusters contain DCs 
-umap_plot + FeaturePlot(pot_dc_data, features= c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1","VCAN","FCER1A"))
+umap_plot + FeaturePlot(first_subset, features= c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1","VCAN","FCER1A"))
 
-umap_plot + FeaturePlot(pot_dc_data, features= c("CD14", "FCGR3A", "TNFRSF1A", "TNFRSF1B", "FCGR1A","IL1RN"))
+umap_plot + FeaturePlot(first_subset, features= c("CD14", "FCGR3A", "TNFRSF1A", "TNFRSF1B", "FCGR1A","IL1RN"))
 
-VlnPlot(pot_dc_data, features = c("CD14", "FCGR3A", "TNFRSF1A", "TNFRSF1B", "FCGR1A","IL1RN"))
+VlnPlot(first_subset, features = c("CD14", "FCGR3A", "TNFRSF1A", "TNFRSF1B", "FCGR1A","IL1RN"))
 # Seems like monocytes are the issue, also in the paper you can see big monocyte cluster
 
 # 7 does look interesting, highest peaks for FCAR and C5AR1
@@ -284,29 +284,29 @@ VlnPlot(pot_dc_data, features = c("CD14", "FCGR3A", "TNFRSF1A", "TNFRSF1B", "FCG
 
 # everything except 0,1,4 and 11
 
-sub_sub_dc_data <- subset(pot_dc_data, idents = c(2,3,5,6,7,8,9,10,12,13))
+second_subset <- subset(first_subset, idents = c(2,3,5,6,7,8,9,10,12,13))
 
 
-############### Analysing sub_sub_dc_data ################
+############### Analysing the second subset ################
 
 # Finding variable features and scaling the data
-sub_sub_dc_data <- FindVariableFeatures(sub_sub_dc_data, selection.method = "vst", nfeatures = 2000)
+second_subset <- FindVariableFeatures(second_subset, selection.method = "vst", nfeatures = 2000)
 
-sub_sub_dc_data <- ScaleData(sub_sub_dc_data, features = VariableFeatures(sub_sub_dc_data)) 
+second_subset <- ScaleData(second_subset, features = VariableFeatures(second_subset)) 
 
 # Running PCA
-sub_sub_dc_data <- RunPCA(sub_sub_dc_data, features = VariableFeatures(object = sub_sub_dc_data))
+second_subset <- RunPCA(second_subset, features = VariableFeatures(object = second_subset))
 
-DimPlot(sub_sub_dc_data, reduction = "pca")
+DimPlot(second_subset, reduction = "pca")
 
 # Creating an elbowplot to find which PCs to take
-ElbowPlot(sub_sub_dc_data, ndims = 40)
+ElbowPlot(second_subset, ndims = 40)
 # Hard to tell which PC is the cutoff
 
 # using computational method to determine elbowpoint
 
 # Get variance explained per PC (as percentages)
-variance_exp <- sub_sub_dc_data[["pca"]]@stdev / sum(sub_sub_dc_data[["pca"]]@stdev) * 100
+variance_exp <- second_subset[["pca"]]@stdev / sum(second_subset[["pca"]]@stdev) * 100
 
 # Finds the PC where the variance explained suddenly drops (looks where drop bigger than 0.1 %)
 drops <- variance_exp[-length(variance_exp)] - variance_exp[-1]
@@ -317,21 +317,21 @@ elbow_pc
 # gives PC 14 as a cutoff
 
 # Creating a UMAP
-sub_sub_dc_data <- FindNeighbors(sub_sub_dc_data, dims = 1:14)
+second_subset <- FindNeighbors(second_subset, dims = 1:14)
 
-sub_sub_dc_data <- FindClusters(sub_sub_dc_data, resolution = 0.5)
+second_subset <- FindClusters(second_subset, resolution = 0.5)
 
-sub_sub_dc_data <- RunUMAP(sub_sub_dc_data, dims = 1:14)
+second_subset <- RunUMAP(second_subset, dims = 1:14)
 
 # Plotting the UMAP
-umap_plot <- DimPlot(sub_sub_dc_data, reduction = "umap")
+umap_plot <- DimPlot(second_subset, reduction = "umap")
 umap_plot
 
 
 # Checking which clusters contain dendritic cells
-VlnPlot(sub_sub_dc_data, features = c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1","CD14","FCGR1A","VCAN","FCGR3A"))
+VlnPlot(second_subset, features = c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1","CD14","FCGR1A","VCAN","FCGR3A"))
 
-umap_plot + FeaturePlot(sub_sub_dc_data, features = c("CD4","CCR7","CCR6","CCR3","CCR5","CCR4")) +
+umap_plot + FeaturePlot(second_subset, features = c("CD4","CCR7","CCR6","CCR3","CCR5","CCR4")) +
   RotatedAxis()
 
 # pDC is cluster 10 
@@ -360,13 +360,13 @@ umap_plot + FeaturePlot(sub_sub_dc_data, features = c("CD4","CCR7","CCR6","CCR3"
 # doing a findmarkers to differentiate between monocytes and moDC clusters
 
 # Finding marker genes
-sub_sub_dc_data.markers <- FindAllMarkers(sub_sub_dc_data, only.pos = TRUE)
+second_subset.markers <- FindAllMarkers(second_subset, only.pos = TRUE)
 
-sub_sub_dc_data$clusters <- Idents(sub_sub_dc_data)
+second_subset$clusters <- Idents(second_subset)
 
 # For finding useful markers
 
-filtered_markers <- sub_sub_dc_data.markers %>%
+filtered_markers <- second_subset.markers %>%
   filter(pct.1 >= 0.20, (pct.1 - pct.2) >= 0.15, avg_log2FC >= 0.25) %>%
   # filters: expressed in ≥20% of cluster, cluster specificity and meaningful effect size
   
@@ -389,31 +389,31 @@ top10_table <- filtered_markers %>%
 # cluster 8 and 10 look like DCs
 
 # Creating a new object with only DC-containing clusters
-DC_data <- subset(sub_sub_dc_data, idents = c(1,3,4,6,7,8,10))
+third_subset <- subset(second_subset, idents = c(1,3,4,6,7,8,10))
 
-############### Analysing DC_data subset ##################
+############### Analysing the third subset ##################
 
 # Finding variable features and scaling the data
-DC_data <- FindVariableFeatures(DC_data, selection.method = "vst", nfeatures = 2000)
+third_subset <- FindVariableFeatures(third_subset, selection.method = "vst", nfeatures = 2000)
 
-DC_data <- ScaleData(DC_data, features = VariableFeatures(DC_data)) 
+third_subset <- ScaleData(third_subset, features = VariableFeatures(third_subset)) 
 
 # Running PCA
-DC_data <- RunPCA(DC_data, features = VariableFeatures(object = DC_data))
+third_subset <- RunPCA(third_subset, features = VariableFeatures(object = third_subset))
 
-DimPlot(DC_data, reduction = "pca")
+DimPlot(third_subset, reduction = "pca")
 
 # Creating a heatmap with all cells in the object
-DimHeatmap(DC_data, dims = 1, cells = 2730, balanced = TRUE)
+DimHeatmap(third_subset, dims = 1, cells = 2730, balanced = TRUE)
 
 # Creating an elbowplot used to find which PCs to use
-ElbowPlot(DC_data, ndims = 40)
+ElbowPlot(third_subset, ndims = 40)
 # Hard to determine the elbowpoint
 
 # Using the computational method 
 
 # Get variance explained per PC (as percentages)
-variance_exp <- DC_data[["pca"]]@stdev / sum(DC_data[["pca"]]@stdev) * 100
+variance_exp <- third_subset[["pca"]]@stdev / sum(third_subset[["pca"]]@stdev) * 100
 
 # Finds the PC where the variance explained suddenly drops (looks where drop bigger than 0.1 %)
 drops <- variance_exp[-length(variance_exp)] - variance_exp[-1]
@@ -424,20 +424,20 @@ elbow_pc
 # elbow finder code suggest 15
 
 # Creating a UMAP
-DC_data <- FindNeighbors(DC_data, dims = 1:15)
+third_subset <- FindNeighbors(third_subset, dims = 1:15)
 
-DC_data <- FindClusters(DC_data, resolution = 0.5)
+third_subset <- FindClusters(third_subset, resolution = 0.5)
 
-DC_data <- RunUMAP(DC_data, dims = 1:15)
+third_subset <- RunUMAP(third_subset, dims = 1:15)
 
 # Plotting the UMAP
-umap_plot <- DimPlot(DC_data, reduction = "umap")
+umap_plot <- DimPlot(third_subset, reduction = "umap")
 umap_plot
 
 # Checking which cluster contain dendritic cells
-VlnPlot(DC_data, features = c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1"))
+VlnPlot(third_subset, features = c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1"))
 
-umap_plot + FeaturePlot(DC_data, features = c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1")) +
+umap_plot + FeaturePlot(third_subset, features = c("C5AR1", "FCAR", "CCR2", "S100A8", "S100A9", "ITGAM", "MRC1")) +
   RotatedAxis()
 
 # pDC is cluster 8 
@@ -448,12 +448,12 @@ umap_plot + FeaturePlot(DC_data, features = c("C5AR1", "FCAR", "CCR2", "S100A8",
 # cluster 1 shows low S100A8 and 9 expression also low C5AR1 and FCAR so likely not DC
 
 # finding gene markers to aid in clusters identification
-DC_data.markers <- FindAllMarkers(DC_data, only.pos = TRUE)
+third_subset.markers <- FindAllMarkers(third_subset, only.pos = TRUE)
 
-DC_data$clusters <- Idents(DC_data)
+third_subset$clusters <- Idents(third_subset)
 
 # For finding useful gene markers
-filtered_markers <- DC_data.markers %>%
+filtered_markers <- third_subset.markers %>%
   filter(pct.1 >= 0.20, (pct.1 - pct.2) >= 0.15, avg_log2FC >= 0.25) %>%
   # Filter: expressed in ≥20% of cluster, cluster specificity >= 0.15, meaningful effect log2FC >= 0.25
   
@@ -493,7 +493,7 @@ top10_table <- filtered_markers %>%
 
 # Creating an object without moDC and DC3s as that annotation is not crystal clear unlike for cDC1, 2 and pDC
 # Especially due to finding out that monocytes/moDC cluster per donor
-pcDC_only <- subset(DC_data, idents = c(5,8))
+pcDC_only <- subset(third_subset, idents = c(5,8))
 
 # 328 cells in total
 
