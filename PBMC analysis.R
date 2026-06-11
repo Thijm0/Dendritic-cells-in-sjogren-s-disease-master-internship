@@ -140,9 +140,6 @@ PBMC_paper_1_data$donor_id <- sapply(parts, function(x) paste(x[1:2], collapse =
 # adding a metadata column for condition
 PBMC_paper_1_data$condition <- sapply(parts, `[`, 1)
 
-# Cleaning up environment
-rm(seurat_list, list = ls(pattern = "^seu_"), parts, load_patient)
-
 ############### Start data analysis ##################
 
 
@@ -175,7 +172,6 @@ DimPlot(PBMC_paper_1_data, reduction = "pca")
 # Creating an elbowplot to see which PCs to use
 ElbowPlot(PBMC_paper_1_data)
 # PC 6 cutoff
-
 
 # Creating a UMAP
 PBMC_paper_1_data <- FindNeighbors(PBMC_paper_1_data, dims = 1:6)
@@ -217,7 +213,6 @@ umap_plot + FeaturePlot(PBMC_paper_1_data, features= c("C5AR1", "FCAR", "CCR2", 
 # The other marker genes do show some expression but they are not only specific for fDCs
 
 # 6 is possibly maybe macrophage cluster, including it as it might contain DCs but keep in mind
-
 
 # Creating a new object with only DC-containing clusters
 first_subset <- subset(PBMC_paper_1_data, idents = c(6,12))
@@ -365,7 +360,6 @@ second_subset.markers <- FindAllMarkers(second_subset, only.pos = TRUE)
 second_subset$clusters <- Idents(second_subset)
 
 # For finding useful markers
-
 filtered_markers <- second_subset.markers %>%
   filter(pct.1 >= 0.20, (pct.1 - pct.2) >= 0.15, avg_log2FC >= 0.25) %>%
   # filters: expressed in ≥20% of cluster, cluster specificity and meaningful effect size
@@ -601,7 +595,6 @@ SaveSeuratRds(pcDC_only, file = "C:/Users/thijm/Downloads/PBMC_dc_only_data")
 
 ############### Donor plot generation ####################
 
-
 # For all 3 papers taking 0,60 and 0,015 for the axis limits for better comparison
 
 # Getting the DC counts per donor
@@ -630,7 +623,6 @@ patient_plot <- ggplot(patient_disease_df, aes(x = donor_id, y = count, fill = c
 plot1 <- patient_plot + theme(plot.title = element_text(size=14, face="bold.italic", hjust = 0.5),
                               axis.title.x = element_text(size=14, face="bold"),
                               axis.title.y = element_text(size=14, face="bold"))
-
 plot1
 
 # Determining fraction of DCs of total cell counts
@@ -679,7 +671,6 @@ DC_fraction_plot <- ggplot(DC_total_cells_df, aes(x = donor_id, y = fraction, fi
 plot3 <- DC_fraction_plot + theme(plot.title = element_text(size=14, face="bold.italic", hjust = 0.5),
                                   axis.title.x = element_text(size=14, face="bold"),
                                   axis.title.y = element_text(size=14, face="bold"))
-
 plot3
 
 # To put all 3 plots together
@@ -756,7 +747,6 @@ df_diff <- df_diff %>%
 
 # Getting the top pathways 
 top_pathways <- df_diff %>%
-  # ungroup() %>%
   arrange(norm_score_Sjogren) %>%
   slice_head(n = 20) %>%
   pull(pathway)
@@ -792,11 +782,9 @@ df_GO_BP_plot$pathway <- sub("^GOBP_", "", df_GO_BP_plot$pathway)
 # Creating a grouped barplot showing the normalized ssGSEA scores per Sjogren's DC type
 plot3 <- ggplot(df_GO_BP_plot, aes(x = cell_type, y = norm_score, fill = condition)) +
   geom_col(position = position_dodge(width = 0.9)) +
-
   # For adding error asterix to bars
   geom_text(aes(label = sig_label),
             position = position_dodge(width = 0.8), vjust = -0.5, size = 4) +
-
   # Splitting the pathways into different graphs and freeing the y axis scale.
   facet_wrap(~ pathway) +
   theme_bw() +
@@ -817,7 +805,7 @@ significant_pathways <- significant_pathways[,c(1,2,3,6,7)] # removing the mean 
 go_bp <- msigdbr(species = "Homo sapiens", collection = "C5", subcollection = "BP") %>%
   dplyr::select(gs_name, gene_symbol)
 
-# creating a list 
+# Creating a list 
 go_bp_genes <- go_bp %>%
   group_by(gs_name) %>%
   summarise(genes = paste(unique(gene_symbol), collapse = ", "))
