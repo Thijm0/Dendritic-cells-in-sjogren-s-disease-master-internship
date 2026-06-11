@@ -21,7 +21,7 @@ library(SPOTlight)
 library(SingleCellExperiment)
 
 
-# to load in Visium starting seurat object (after generating it in this code)
+# To load in Visium starting seurat object (after generating it in this code)
 Spatial_SG_1 <- readRDS("C:/Users/thijm/Downloads/Spatial_SG_1.rds")
 
 
@@ -42,16 +42,17 @@ load_data <- function(path,file_name) {
   # Grabbing the counts
   raw <- seurat_object@assays$RNA@layers$X
   
-  # grabbing the barcodes and gene names from the meta dat
+  # Grabbing the barcodes and gene names from the meta dat
   barcodes <- rownames(seurat_object@meta.data)
   genes <- rownames(seurat_object)
   
   # Ensemble to gene names 
   gene_symbols <- mapping$Gene.name[match(genes, mapping$Gene.stable.ID)]
+  
   # To deal with NAs replacing them with their ensemble codes again
   gene_symbols[is.na(gene_symbols)] <- genes[is.na(gene_symbols)]
   
-  # assigning the barcodes and gene names to the counts
+  # Assigning the barcodes and gene names to the counts
   colnames(raw) <- barcodes
   rownames(raw) <- make.unique(gene_symbols)
   
@@ -188,7 +189,7 @@ saveRDS(object = markers, file = "C:/Users/thijm/Downloads/Markers_spotlight.rds
 # To load it in
 markers <- readRDS("C:/Users/thijm/Downloads/Markers_spotlight.rds")
   
-# getting the top 50 markers per cell type
+# Getting the top 50 markers per cell type
 markers_top <- markers %>%
   group_by(cluster) %>%
   top_n(50, wt = avg_log2FC)
@@ -221,7 +222,7 @@ empty_spots <- rownames(Spatial_SG_1@meta.data)[Spatial_SG_1$cell_type == "unkno
 # Making spots without cells 0 (To not get estimates on spots without cells)
 props[empty_spots, ] <- NA
 
-# setting a new metadata column for the estimated cell counts per spot.
+# Setting a new metadata column for the estimated cell counts per spot.
 Spatial_SG_1$estimated_cells <- NA
 
 # Removes NA so that no cell counts are estimated for spots without cells
@@ -252,7 +253,7 @@ cell_counts <- round(props_norm * Spatial_SG_1$estimated_cells)
 # Total cell counts per spot
 Spatial_SG_1$cell_counts <- rowSums(cell_counts)
 
-# setting a hard cap of 15 cells per spot
+# Setting a hard cap of 15 cells per spot
 Spatial_SG_1$cell_counts <- pmin(rowSums(cell_counts), 15)
 
 # Adding the cell counts per cell type as metadata columns
